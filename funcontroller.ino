@@ -4,6 +4,7 @@
 
 int state = 0;
 int Pwm;
+
 unsigned long time;
     
 void setup()
@@ -16,6 +17,7 @@ void setup()
   analogWrite(MOTOR_PIN, 255);
   state = 5;
   Pwm = 255;
+  beep(SPEAKER_PIN, 880, 30);
 
   time = millis();
 }
@@ -28,14 +30,20 @@ void loop() {
     analogWrite(MOTOR_PIN, Pwm);
     state = 5;
     time = millis();
+    beep(SPEAKER_PIN, 880, 30);
+    delay(200);
   }
   
-  if (state == 5) {
-    if (millis() - time > 600000UL) { // 10分後
-      analogWrite(MOTOR_PIN, 40); // めいっぱい遅く
+  if (state > 0) {
+    if (Pwm > 40 && millis() - time > 600000UL) { // 10分後
+      Pwm = 40;
+      analogWrite(MOTOR_PIN, Pwm); // めいっぱい遅く
+      beep(SPEAKER_PIN, 262, 20); 
 
-    } else if (millis() - time > 120000UL) { // 2分後
-      analogWrite(MOTOR_PIN, 120); // まあまあ遅く
+    } else if (Pwm > 120 && millis() - time > 120000UL) { // 2分後
+      Pwm = 120;
+      analogWrite(MOTOR_PIN, Pwm); // まあまあ遅く
+      beep(SPEAKER_PIN, 392, 20); 
     }
   }
   
@@ -46,43 +54,52 @@ void loop() {
     if (state == 0) {
       Pwm = 0;
       analogWrite(MOTOR_PIN, Pwm);
-      beep(SPEAKER_PIN, 880, 30);
-      delay(50);
-      beep(SPEAKER_PIN, 440, 50);
+      beep(SPEAKER_PIN, 440, 30);
+      delay(30);
+      beep(SPEAKER_PIN, 440, 30);
       
     } else {
       
       switch (state) {
         case 4:
-          analogWrite(MOTOR_PIN, 180);
+          Pwm = 180;
+          analogWrite(MOTOR_PIN, Pwm);
+          beep(SPEAKER_PIN, 783, 30);
           break;
         case 3:
-          analogWrite(MOTOR_PIN, 120);
+          Pwm = 120;
+          analogWrite(MOTOR_PIN, Pwm);
+          beep(SPEAKER_PIN, 700, 30);
           break;
         case 2:
-          analogWrite(MOTOR_PIN, 70);
+          Pwm = 70;
+          analogWrite(MOTOR_PIN, Pwm);
+          beep(SPEAKER_PIN, 660, 30);
           break;
         case 1:
-          analogWrite(MOTOR_PIN, 40);
+          Pwm = 40;
+          analogWrite(MOTOR_PIN, Pwm);
+          beep(SPEAKER_PIN, 587, 30);
           break;
       }
-      beep(SPEAKER_PIN, 880, 30);
+      
     }
     
-    delay(300);
+    delay(200);
   } 
   
   if (state > 0 && millis() - time > 2400000UL) { // 40分後
-    analogWrite(MOTOR_PIN, 0); // stop
+    Pwm = 0;
+    analogWrite(MOTOR_PIN, Pwm); // stop
     state = 0;
-
-    beep(SPEAKER_PIN, 880, 50);
+    
+    beep(SPEAKER_PIN, 523, 50);
     delay(100);
-    beep(SPEAKER_PIN, 880, 50);
+    beep(SPEAKER_PIN, 523, 50);
     delay(100);
-    beep(SPEAKER_PIN, 880, 50);
+    beep(SPEAKER_PIN, 523, 50);
     delay(100);
-    beep(SPEAKER_PIN, 880, 50);
+    beep(SPEAKER_PIN, 523, 50);
     
   }
 
